@@ -19,8 +19,9 @@ class PdfResponse
      * @throws \setasign\Fpdi\PdfParser\PdfParserException
      * @throws \setasign\Fpdi\PdfParser\Type\PdfTypeException
      */
-    public function processRequest(ServerRequestInterface $request)
+    public function processRequest(ServerRequestInterface $request): ResponseInterface
     {
+        $response = GeneralUtility::makeInstance(Response::class);
         $param = $request->getQueryParams();
         $mpdf = null;
         if (isset($param['file']) && $param['file']) {
@@ -29,8 +30,10 @@ class PdfResponse
         if ($mpdf) {
             $mpdf->Output(PdfService::PDF_NAME, \Mpdf\Output\Destination::INLINE);
         } else {
-            return (new Response())->withStatus(404);
+            return $response->withStatus(404);
         }
+
+        return $response;
     }
 
     /**
